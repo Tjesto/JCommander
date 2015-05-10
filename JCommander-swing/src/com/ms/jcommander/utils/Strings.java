@@ -4,6 +4,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Strings {		
+	
+	private static final String[] keys = new String[]{"hader.file", "header.size", "header.modified"};
 
 	public static String of() {
 		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
@@ -43,6 +45,11 @@ public class Strings {
 	public static Object chooseName() {
 		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
 		return rb.getString("choose.name");
+	}
+
+	public static String name(int column) {
+		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());		
+		return rb.getString(keys[column]);
 	}
 
 }

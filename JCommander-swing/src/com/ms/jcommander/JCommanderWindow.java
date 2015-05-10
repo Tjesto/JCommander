@@ -1,5 +1,6 @@
 package com.ms.jcommander;
 
+import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.Action;
@@ -40,6 +41,8 @@ import com.ms.jcommander.utils.Strings;
 import com.ms.jcommander.utils.Utils;
 
 import javax.swing.JPopupMenu;
+import javax.swing.table.DefaultTableCellRenderer;
+
 import java.awt.Dimension;
 
 public class JCommanderWindow {
@@ -269,7 +272,7 @@ public class JCommanderWindow {
 		
 		final JPopupMenu rightTableContextMenu = new JPopupMenu();
 		initializePopupMenus(leftTableContextMenu,rightTableContextMenu);
-		rightPanel.add(rightTableContextMenu, BorderLayout.SOUTH);
+		rightPanel.add(rightTableContextMenu, BorderLayout.SOUTH);				
 		rightFilesTable.addMouseListener(new AbstractOnClickListener() {
 
 			@Override

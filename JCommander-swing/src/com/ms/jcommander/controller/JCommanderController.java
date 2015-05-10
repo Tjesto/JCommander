@@ -1,12 +1,18 @@
 package com.ms.jcommander.controller;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import org.apache.commons.io.FileUtils;
 
@@ -16,6 +22,7 @@ import com.ms.jcommander.model.ModelBinder.WindowSide;
 import com.ms.jcommander.model.RootDirectoriesModelBinder;
 import com.ms.jcommander.utils.Strings;
 import com.ms.jcommander.utils.Utils;
+import com.sun.javafx.binding.StringFormatter;
 
 public class JCommanderController {
 	
@@ -73,6 +80,9 @@ public class JCommanderController {
 				.append(Strings.free());
 		label.setText(builder.toString());
 		path.setText(selected.getAbsolutePath());
+		table.getColumn(Strings.name(0)).setCellRenderer(new FilesNamesTableRenderer());
+		table.getColumn(Strings.name(1)).setCellRenderer(new FilesSizesTableRenderer());
+		table.getColumn(Strings.name(2)).setCellRenderer(new FilesModificationTableRenderer());
 	}
 
 	public void removeFiles(JTable table) throws IOException {
@@ -112,4 +122,49 @@ public class JCommanderController {
 		notifySelectionChanged(WindowSide.RIGHT, new File (mainWindow.getRightPath().getText()));
 	}
 
+}
+
+class FilesNamesTableRenderer extends DefaultTableCellRenderer {
+	
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+		File f = (File) value;
+		return super.getTableCellRendererComponent(table, f.getName(), isSelected, hasFocus,
+				row, column);
+	}
+	
+}
+
+class FilesSizesTableRenderer extends DefaultTableCellRenderer {
+	
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+		Object o; 
+		if (value instanceof String) {
+			o = value;
+		} else {
+			double v = (long) value;			
+			String[] values = new String[] {"B", "kB", "MB", "GB", "TB"};
+			int i = 0;
+			for (i = 0; i < values.length && v > 1024; i++, v /= 1024);
+			o = String.format(Locale.getDefault(), "%,.2f%s", v, values[i]);
+		}
+		return super.getTableCellRendererComponent(table, o, isSelected, hasFocus,
+				row, column);
+	}
+	
+}
+
+class FilesModificationTableRenderer extends DefaultTableCellRenderer {	
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {		
+		String s = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+				DateFormat.DEFAULT, Locale.getDefault()).format((Date) value);
+		return super.getTableCellRendererComponent(table, s, isSelected, hasFocus,
+				row, column);
+	}
+	
 }

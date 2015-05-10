@@ -1,10 +1,14 @@
 package com.ms.jcommander.model;
 
 import java.io.File;
+import java.util.Date;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
+
+import com.ms.jcommander.utils.Strings;
+import com.ms.jcommander.utils.Utils;
 
 public class FilesTableModel extends AbstractTableModel {
 
@@ -22,6 +26,11 @@ public class FilesTableModel extends AbstractTableModel {
 	@Override
 	public int getRowCount() {
 		return model.length;
+	}	
+	
+	@Override
+	public String getColumnName(int column) {		
+		return Strings.name(column);
 	}
 
 	@Override
@@ -33,7 +42,7 @@ public class FilesTableModel extends AbstractTableModel {
 			File f = model[rowIndex];
 			return f.isDirectory()? "<DIR>" : f.length();
 		case 2:
-			return model[rowIndex].lastModified();
+			return new Date(model[rowIndex].lastModified());
 		}
 		return null;
 	}
