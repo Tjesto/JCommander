@@ -321,6 +321,37 @@ public class JCommanderWindow {
 			}
 		});	
 		
+		ContextMenuItem.createAndAdd(Strings.newFolder(), leftTableContextMenu, rightTableContextMenu,
+				new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							String name = getName();
+							controller.addNewDirectory(leftPath.getText(), name);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}						
+					}
+				},
+		
+		new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String name = getName();
+					controller.addNewDirectory(rightPath.getText(), name);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}						
+			}
+		});	
+		
+	}
+
+	protected String getName() {		
+		return JOptionPane.showInputDialog(frame, Strings.chooseName());
 	}
 
 	public JComboBox<File> getRootDirLeft() {

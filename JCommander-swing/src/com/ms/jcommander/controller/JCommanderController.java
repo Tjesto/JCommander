@@ -15,6 +15,7 @@ import com.ms.jcommander.model.FilesTableModel;
 import com.ms.jcommander.model.ModelBinder.WindowSide;
 import com.ms.jcommander.model.RootDirectoriesModelBinder;
 import com.ms.jcommander.utils.Strings;
+import com.ms.jcommander.utils.Utils;
 
 public class JCommanderController {
 	
@@ -42,12 +43,11 @@ public class JCommanderController {
 	}
 
 	public void notifySelectionChanged(WindowSide side, File selected) {
-		if (selected == null || selected.listFiles() == null) {
+		if (selected == null || selected.listFiles() == null) {							
 			JOptionPane.showMessageDialog(mainWindow.getFrame(),
 					Strings.diskNotAvailableMessage(),
 					Strings.diskNotAvailableTitle(), JOptionPane.ERROR_MESSAGE);
-			rootDirectiries.updateViews(side, lastSelected[side.getIndex()]);
-			//notifySelectionChanged(side, lastSelected[side.getIndex()]);
+			rootDirectiries.updateViews(side, lastSelected[side.getIndex()]);			
 			return;
 		}
 		switch (side) {
@@ -78,14 +78,36 @@ public class JCommanderController {
 	public void removeFiles(JTable table) throws IOException {
 		for (int index : table.getSelectedRows()) {
 			File f = (File) table.getModel().getValueAt(index, 0);
-			if (f.canWrite()) {
+			if (f.canWrite()) {				
 				if (f.isDirectory()) {
+					checkDirs(f);
 					FileUtils.deleteDirectory(f);
 				} else if (f.isFile()) {
 					f.delete();
 				}
 			}
 		}
+		notifySelectionChanged(WindowSide.LEFT, new File (mainWindow.getLeftPath().getText()));
+		notifySelectionChanged(WindowSide.RIGHT, new File (mainWindow.getRightPath().getText()));
+	}
+	
+	private void checkDirs(File f) {
+		if (mainWindow.getLeftPath().getText().equals(f.getAbsolutePath())) {
+			notifySelectionChanged(WindowSide.LEFT, new File(Utils.removeFileName(mainWindow.getLeftPath().getText())));
+		}
+		
+		if (mainWindow.getRightPath().getText().equals(f.getAbsolutePath())) {
+			notifySelectionChanged(WindowSide.LEFT, new File(Utils.removeFileName(mainWindow.getRightPath().getText())));
+		}
+		
+	}
+
+	public void addNewDirectory(String path, String name) throws IOException {
+		File f = new File(path, name);
+		if (f.exists()) {
+			return;
+		}
+		boolean s = f.mkdirs();
 		notifySelectionChanged(WindowSide.LEFT, new File (mainWindow.getLeftPath().getText()));
 		notifySelectionChanged(WindowSide.RIGHT, new File (mainWindow.getRightPath().getText()));
 	}

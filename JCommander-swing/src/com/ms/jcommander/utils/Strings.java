@@ -34,5 +34,15 @@ public class Strings {
 		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
 		return rb.getString("delete");
 	}
+	
+	public static String newFolder() {
+		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
+		return rb.getString("new.folder");
+	}
+
+	public static Object chooseName() {
+		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
+		return rb.getString("choose.name");
+	}
 
 }
