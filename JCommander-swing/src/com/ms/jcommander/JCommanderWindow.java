@@ -40,6 +40,7 @@ import com.ms.jcommander.utils.Strings;
 import com.ms.jcommander.utils.Utils;
 
 import javax.swing.JPopupMenu;
+import java.awt.Dimension;
 
 public class JCommanderWindow {
 
@@ -126,13 +127,23 @@ public class JCommanderWindow {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
 		rootDirLeft = new JComboBox<>();
+		rootDirLeft.setMaximumSize(new Dimension(64, 32767));
 		panel.add(rootDirLeft);
 
 		leftMainDirInfo = new JLabel("New label");
 		panel.add(leftMainDirInfo);
 
-		JButton button = new JButton("\\");
-		panel.add(button);
+		JButton leftRootButton = new JButton("\\");
+		panel.add(leftRootButton);
+		leftRootButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String path = leftPath.getText();
+				File selected = new File(Utils.getRoot(path));
+				controller.notifySelectionChanged(WindowSide.LEFT, selected);
+			}
+		});		
 
 		JButton leftBackButton = new JButton("..");
 		panel.add(leftBackButton);
@@ -215,13 +226,24 @@ public class JCommanderWindow {
 		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.X_AXIS));
 
 		rootDirRight = new JComboBox<>();
+		rootDirRight.setMaximumSize(new Dimension(64, 32767));
 		panel_1.add(rootDirRight);
 
 		rightMainDirInfo = new JLabel("New label");
 		panel_1.add(rightMainDirInfo);
 
-		JButton button_1 = new JButton("\\");
-		panel_1.add(button_1);
+		JButton rightRootButton = new JButton("\\");
+		panel_1.add(rightRootButton);
+		
+		rightRootButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String path = rightPath.getText();
+				File selected = new File(Utils.getRoot(path));
+				controller.notifySelectionChanged(WindowSide.RIGHT, selected);
+			}
+		});
 
 		JButton rightBackButton = new JButton("..");
 		panel_1.add(rightBackButton);
@@ -295,31 +317,7 @@ public class JCommanderWindow {
 	}
 
 	private void initializePopupMenus(JPopupMenu leftTableContextMenu,
-			JPopupMenu rightTableContextMenu) {		 		
-		ContextMenuItem.createAndAdd(Strings.delete(), leftTableContextMenu, rightTableContextMenu,
-				new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						try {
-							controller.removeFiles(leftFilesTable);
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}						
-					}
-				},
-		
-		new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					controller.removeFiles(rightFilesTable);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}						
-			}
-		});	
+			JPopupMenu rightTableContextMenu) {	
 		
 		ContextMenuItem.createAndAdd(Strings.newFolder(), leftTableContextMenu, rightTableContextMenu,
 				new ActionListener() {
@@ -346,7 +344,34 @@ public class JCommanderWindow {
 					e1.printStackTrace();
 				}						
 			}
+		});
+		
+		ContextMenuItem.createAndAdd(Strings.delete(), leftTableContextMenu, rightTableContextMenu,
+				new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							controller.removeFiles(leftFilesTable);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}						
+					}
+				},
+		
+		new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					controller.removeFiles(rightFilesTable);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}						
+			}
 		});	
+		
+		
 		
 	}
 

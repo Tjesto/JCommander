@@ -1,5 +1,7 @@
 package com.ms.jcommander.utils;
 
+import java.io.File;
+
 public class Utils {	
 	
 	public static final String SYSTEM_NAME = System.getProperty("os.name");
@@ -20,6 +22,15 @@ public class Utils {
 		}
 		return path.substring(0, lastSlash);
 		
+	}
+
+	public static String getRoot(String path) {
+		for (File f : File.listRoots()) {
+			if (path.startsWith(f.getAbsolutePath())) {
+				return f.getAbsolutePath();
+			}
+		}
+		return path;
 	}
 
 }
