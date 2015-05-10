@@ -1,11 +1,14 @@
 package com.ms.jcommander.controller;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+
+import org.apache.commons.io.FileUtils;
 
 import com.ms.jcommander.JCommanderWindow;
 import com.ms.jcommander.model.FilesTableModel;
@@ -70,6 +73,21 @@ public class JCommanderController {
 				.append(Strings.free());
 		label.setText(builder.toString());
 		path.setText(selected.getAbsolutePath());
+	}
+
+	public void removeFiles(JTable table) throws IOException {
+		for (int index : table.getSelectedRows()) {
+			File f = (File) table.getModel().getValueAt(index, 0);
+			if (f.canWrite()) {
+				if (f.isDirectory()) {
+					FileUtils.deleteDirectory(f);
+				} else if (f.isFile()) {
+					f.delete();
+				}
+			}
+		}
+		notifySelectionChanged(WindowSide.LEFT, new File (mainWindow.getLeftPath().getText()));
+		notifySelectionChanged(WindowSide.RIGHT, new File (mainWindow.getRightPath().getText()));
 	}
 
 }

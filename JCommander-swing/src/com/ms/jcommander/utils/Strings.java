@@ -30,4 +30,9 @@ public class Strings {
 		return rb.getString("file.cant.open");
 	}
 
+	public static String delete() {
+		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
+		return rb.getString("delete");
+	}
+
 }
