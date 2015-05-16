@@ -71,7 +71,7 @@ public class JCommanderController {
 	}
 
 	private void updateRootSelection(File selected, JTable table, JLabel label, JTextField path) {
-		File[] files = selected.listFiles();
+		File[] files = selected.listFiles();	
 		table.setModel(new FilesTableModel(files));
 		StringBuilder builder = new StringBuilder();
 		builder.append(selected.getFreeSpace() / 1024).append("k ")
@@ -118,6 +118,11 @@ public class JCommanderController {
 			return;
 		}
 		boolean s = f.mkdirs();
+		notifySelectionChanged(WindowSide.LEFT, new File (mainWindow.getLeftPath().getText()));
+		notifySelectionChanged(WindowSide.RIGHT, new File (mainWindow.getRightPath().getText()));
+	}
+
+	public void invalidate() {
 		notifySelectionChanged(WindowSide.LEFT, new File (mainWindow.getLeftPath().getText()));
 		notifySelectionChanged(WindowSide.RIGHT, new File (mainWindow.getRightPath().getText()));
 	}

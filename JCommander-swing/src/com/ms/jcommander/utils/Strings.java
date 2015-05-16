@@ -3,6 +3,8 @@ package com.ms.jcommander.utils;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.swing.Icon;
+
 public class Strings {		
 	
 	private static final String[] keys = new String[]{"hader.file", "header.size", "header.modified"};
@@ -50,6 +52,21 @@ public class Strings {
 	public static String name(int column) {
 		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());		
 		return rb.getString(keys[column]);
+	}
+
+	public static String menuSettings() {
+		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());		
+		return rb.getString("menus.settings");
+	}
+	
+	public static String menuFile() {
+		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());		
+		return rb.getString("menus.file");
+	}
+	
+	public static String menuEdit() {
+		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());		
+		return rb.getString("menus.edit");
 	}
 
 }

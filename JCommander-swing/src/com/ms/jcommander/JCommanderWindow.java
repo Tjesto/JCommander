@@ -4,10 +4,13 @@ import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
 import javax.swing.JToolBar;
 
 import java.awt.BorderLayout;
@@ -28,6 +31,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -35,8 +39,10 @@ import javax.swing.BoxLayout;
 
 import com.ms.jcommander.controller.JCommanderController;
 import com.ms.jcommander.listeners.AbstractOnClickListener;
+import com.ms.jcommander.listeners.OnLocalesChangeListener;
 import com.ms.jcommander.menus.ContextMenuItem;
 import com.ms.jcommander.model.ModelBinder.WindowSide;
+import com.ms.jcommander.utils.LanguageUtils;
 import com.ms.jcommander.utils.Strings;
 import com.ms.jcommander.utils.Utils;
 
@@ -97,18 +103,49 @@ public class JCommanderWindow {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 900, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		LanguageUtils.languageUtils().addListener(new OnLocalesChangeListener() {
+			
+			@Override
+			public void onLocalesChanged() {
+				invalidateAll();
+			}
+		});
 
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
-
-		JMenuItem fileSubmenuItem = new JMenuItem("File");
+		
+		JMenuItem fileSubmenuItem = new JMenuItem(Strings.menuFile());
 		menuBar.add(fileSubmenuItem);
 
-		JMenuItem editSubmenuItem = new JMenuItem("Edit");
+		JMenuItem editSubmenuItem = new JMenuItem(Strings.menuEdit());
 		menuBar.add(editSubmenuItem);
 
-		JMenuItem settingsSubmenuItem = new JMenuItem("Settings");
+		JMenuItem settingsSubmenuItem = new JMenuItem(Strings.menuSettings());
 		menuBar.add(settingsSubmenuItem);
+		settingsSubmenuItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//createSettingsMenu(settingsSubmenuItem);
+				Locale cur = Locale.getDefault();
+				if (cur.equals(new Locale("pl"))) {
+					LanguageUtils.languageUtils().setLocale(Locale.ENGLISH);
+				} else {
+					LanguageUtils.languageUtils().setLocale(new Locale("pl"));					
+				}
+			}
+		});
+		
+		LanguageUtils.languageUtils().addListener(new OnLocalesChangeListener() {
+			
+			@Override
+			public void onLocalesChanged() {
+				fileSubmenuItem.setText(Strings.menuFile());
+				editSubmenuItem.setText(Strings.menuEdit());
+				settingsSubmenuItem.setText(Strings.menuSettings());
+			}
+		});
 
 		JToolBar toolBar = new JToolBar();
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
@@ -429,5 +466,22 @@ public class JCommanderWindow {
 	public JLabel getLeftMainDirInfo() {
 		return leftMainDirInfo;
 	}
+	
+	protected void invalidateAll() {
+		invalidateViews(getFrame().getComponents());
+		controller.invalidate();				
+	}
+
+	private void invalidateViews(Component[] components) {
+		for (Component c : components) {
+			c.repaint();
+			if (c instanceof JComponent) {
+				invalidateViews(((JComponent) c).getComponents());				
+			}
+			
+		}
+		
+	}
+	
 
 }
