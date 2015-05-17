@@ -42,7 +42,7 @@ public class FilesTableModel extends AbstractTableModel {
 			File f = model[rowIndex];
 			return f.isDirectory()? "<DIR>" : f.length();
 		case 2:
-			return new Date(model[rowIndex].lastModified());
+			return new Object[] {model[rowIndex].isDirectory(), new Date(model[rowIndex].lastModified()) };
 		}
 		return null;
 	}
