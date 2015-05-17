@@ -50,6 +50,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.Dimension;
+import javax.swing.JRadioButtonMenuItem;
 
 public class JCommanderWindow {
 
@@ -115,25 +116,55 @@ public class JCommanderWindow {
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
-		JMenuItem fileSubmenuItem = new JMenuItem(Strings.menuFile());
-		menuBar.add(fileSubmenuItem);
-
-		JMenuItem editSubmenuItem = new JMenuItem(Strings.menuEdit());
-		menuBar.add(editSubmenuItem);
-
-		JMenuItem settingsSubmenuItem = new JMenuItem(Strings.menuSettings());
-		menuBar.add(settingsSubmenuItem);
-		settingsSubmenuItem.addActionListener(new ActionListener() {
+		JMenu fileSubmenu = new JMenu(Strings.menuFile());
+		menuBar.add(fileSubmenu);
+		
+		JMenu editSubmenu = new JMenu(Strings.menuEdit());
+		menuBar.add(editSubmenu);
+		
+		JMenu settingsSubmenu = new JMenu(Strings.menuSettings());
+		menuBar.add(settingsSubmenu);
+		
+		JMenu languageSettings = new JMenu(Strings.menuLanguage());
+		settingsSubmenu.add(languageSettings);
+		
+		JRadioButtonMenuItem polishLang = new JRadioButtonMenuItem(Strings.polishLang());
+		languageSettings.add(polishLang);
+		
+		JRadioButtonMenuItem englishLang = new JRadioButtonMenuItem(Strings.englishLang());
+		languageSettings.add(englishLang);
+		
+		JRadioButtonMenuItem italianLang = new JRadioButtonMenuItem(Strings.italianLang());
+		languageSettings.add(italianLang);
+		englishLang.setSelected(true);
+		
+		polishLang.addActionListener(new ActionListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				//createSettingsMenu(settingsSubmenuItem);
-				Locale cur = Locale.getDefault();
-				if (cur.equals(new Locale("pl"))) {
-					LanguageUtils.languageUtils().setLocale(Locale.ENGLISH);
-				} else {
-					LanguageUtils.languageUtils().setLocale(new Locale("pl"));					
-				}
+			public void actionPerformed(ActionEvent arg0) {
+				LanguageUtils.languageUtils().setLocale(LanguageUtils.PL);
+				englishLang.setSelected(false);
+				italianLang.setSelected(false);
+			}
+		});
+		
+		englishLang.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				LanguageUtils.languageUtils().setLocale(LanguageUtils.EN);
+				italianLang.setSelected(false);
+				polishLang.setSelected(false);
+			}
+		});
+		
+		italianLang.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				LanguageUtils.languageUtils().setLocale(LanguageUtils.IT);
+				englishLang.setSelected(false);
+				polishLang.setSelected(false);
 			}
 		});
 		
@@ -141,9 +172,10 @@ public class JCommanderWindow {
 			
 			@Override
 			public void onLocalesChanged() {
-				fileSubmenuItem.setText(Strings.menuFile());
-				editSubmenuItem.setText(Strings.menuEdit());
-				settingsSubmenuItem.setText(Strings.menuSettings());
+				fileSubmenu.setText(Strings.menuFile());
+				editSubmenu.setText(Strings.menuEdit());
+				settingsSubmenu.setText(Strings.menuSettings());
+				languageSettings.setText(Strings.menuLanguage());
 			}
 		});
 

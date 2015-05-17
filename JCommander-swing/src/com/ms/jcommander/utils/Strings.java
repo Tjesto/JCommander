@@ -8,65 +8,72 @@ import javax.swing.Icon;
 public class Strings {		
 	
 	private static final String[] keys = new String[]{"hader.file", "header.size", "header.modified"};
+	
+	private static String getString(String key) {
+		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
+		return rb.getString(key);
+	}
 
 	public static String of() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
-		return rb.getString("free.bytes.of");
+		return getString("free.bytes.of");
 	}
 	
 	public static String free() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
-		return rb.getString("free");
+		return getString("free");
 	}
 
 	public static String diskNotAvailableMessage() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
-		return rb.getString("file.not.available.msg");
+		return getString("file.not.available.msg");
 	}
 	
 	public static String diskNotAvailableTitle() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
-		return rb.getString("file.not.available.title");
+		return getString("file.not.available.title");
 	}
 
-	public static Object cantOpen() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
-		return rb.getString("file.cant.open");
+	public static String cantOpen() {
+		return getString("file.cant.open");
 	}
 
 	public static String delete() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
-		return rb.getString("delete");
+		return getString("delete");
 	}
 	
 	public static String newFolder() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
-		return rb.getString("new.folder");
+		return getString("new.folder");
 	}
 
 	public static Object chooseName() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());
-		return rb.getString("choose.name");
+		return getString("choose.name");
 	}
 
 	public static String name(int column) {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());		
-		return rb.getString(keys[column]);
+		return getString(keys[column]);
 	}
 
 	public static String menuSettings() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());		
-		return rb.getString("menus.settings");
+		return getString("menus.settings");
 	}
 	
 	public static String menuFile() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());		
-		return rb.getString("menus.file");
+		return getString("menus.file");
 	}
 	
 	public static String menuEdit() {
-		ResourceBundle rb = ResourceBundle.getBundle("com.ms.jcommander.res.Strings", Locale.getDefault());		
-		return rb.getString("menus.edit");
+		return getString("menus.edit");
+	}
+	
+	public static String menuLanguage() {
+		return getString("menus.language");
+	}
+	
+	public static String polishLang() {
+		return getString("lang.polish");
+	}
+	public static String englishLang() {
+		return getString("lang.english");
+	}
+	public static String italianLang() {
+		return getString("lang.italian");
 	}
 
 }
