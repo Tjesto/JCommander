@@ -145,7 +145,8 @@ public class JCommanderController {
 		table.setRowSorter(sorter);
 		sorter.setComparator(0, nameComparator);
 		sorter.setComparator(1, sizeComparator);
-		sorter.setComparator(2, modificationComparator);		
+		sorter.setComparator(2, modificationComparator);
+		sorter.toggleSortOrder(0);
 		StringBuilder builder = new StringBuilder();
 		builder.append(selected.getFreeSpace() / 1024).append("k ")
 				.append(Strings.of()).append(' ')
