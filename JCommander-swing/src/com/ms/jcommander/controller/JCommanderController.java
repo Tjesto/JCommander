@@ -39,6 +39,22 @@ public class JCommanderController {
 	private RootDirectoriesModelBinder rootDirectiries;
 
 	private TableRowSorter<FilesTableModel> sorter;
+	
+	private int sortedColumnNum = 0;
+	
+	private class FilesRowSorter extends TableRowSorter<FilesTableModel> {
+		
+		public FilesRowSorter(FilesTableModel model) {
+			super(model);
+		}
+
+		@Override
+		public void toggleSortOrder(int column) {
+			sortedColumnNum = column;
+			super.toggleSortOrder(column);
+		}
+				
+	}
 
 	private final Comparator<File> nameComparator = new Comparator<File>() {
 		
@@ -141,12 +157,12 @@ public class JCommanderController {
 		File[] files = selected.listFiles();
 		FilesTableModel model = new FilesTableModel(files);
 		table.setModel(model);
-		sorter = new TableRowSorter<FilesTableModel>(model);
+		sorter = new FilesRowSorter(model);
 		table.setRowSorter(sorter);
 		sorter.setComparator(0, nameComparator);
 		sorter.setComparator(1, sizeComparator);
 		sorter.setComparator(2, modificationComparator);
-		sorter.toggleSortOrder(0);
+		sorter.toggleSortOrder(sortedColumnNum);
 		StringBuilder builder = new StringBuilder();
 		builder.append(selected.getFreeSpace() / 1024).append("k ")
 				.append(Strings.of()).append(' ')
