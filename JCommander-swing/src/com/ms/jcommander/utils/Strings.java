@@ -76,4 +76,12 @@ public class Strings {
 		return getString("lang.italian");
 	}
 
+	public static String copy() {
+		return getString("copy");
+	}
+
+	public static String move() {
+		return getString("move");
+	}
+
 }

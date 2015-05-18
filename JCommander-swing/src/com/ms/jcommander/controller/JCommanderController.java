@@ -95,9 +95,6 @@ public class JCommanderController {
 			if ((Boolean) ((Object[]) o2)[0] && !((Boolean) ((Object[]) o1)[0])) {
 				return 1;
 			}
-			if ((Boolean) ((Object[]) o1)[0] && ((Boolean) ((Object[]) o2)[0])) {
-				return 0;
-			}
 			Date d1 = (Date) ((Object[]) o1)[1];
 			Date d2 = (Date) ((Object[]) o2)[1];
 			int dates = d1.before(d2) ? -1 : d1.after(d2) ? 1 : 0;
@@ -158,11 +155,13 @@ public class JCommanderController {
 		FilesTableModel model = new FilesTableModel(files);
 		table.setModel(model);
 		sorter = new FilesRowSorter(model);
+		sorter.addRowSorterListener(model);
 		table.setRowSorter(sorter);
 		sorter.setComparator(0, nameComparator);
 		sorter.setComparator(1, sizeComparator);
 		sorter.setComparator(2, modificationComparator);
 		sorter.toggleSortOrder(sortedColumnNum);
+		sorter.sort();
 		StringBuilder builder = new StringBuilder();
 		builder.append(selected.getFreeSpace() / 1024).append("k ")
 				.append(Strings.of()).append(' ')
@@ -176,19 +175,28 @@ public class JCommanderController {
 	}
 
 	public void removeFiles(JTable table) throws IOException {
-		for (int index : table.getSelectedRows()) {
-			File f = (File) table.getModel().getValueAt(index, 0);
+		String newLeftPath = mainWindow.getLeftPath().getText();
+		String newRightPath = mainWindow.getRightPath().getText();
+		for (int index : table.getSelectedRows()) {			
+			File f = (File) ((FilesTableModel) table.getModel()).getFileAt(index);					
+			System.out.println(f.getName());
+			if (newLeftPath.contains(f.getCanonicalPath())) {
+				newLeftPath = Utils.removeFileName(newLeftPath);
+			}
+			if (newRightPath.contains(f.getCanonicalPath())) {
+				newRightPath = Utils.removeFileName(newRightPath);
+			}
 			if (f.canWrite()) {				
 				if (f.isDirectory()) {
 					checkDirs(f);
 					FileUtils.deleteDirectory(f);
 				} else if (f.isFile()) {
-					f.delete();
+					FileUtils.forceDelete(f);
 				}
-			}
+			}			
 		}
-		notifySelectionChanged(WindowSide.LEFT, new File (mainWindow.getLeftPath().getText()));
-		notifySelectionChanged(WindowSide.RIGHT, new File (mainWindow.getRightPath().getText()));
+		notifySelectionChanged(WindowSide.LEFT, new File (newLeftPath));
+		notifySelectionChanged(WindowSide.RIGHT, new File (newRightPath));
 	}
 	
 	private void checkDirs(File f) {
@@ -203,6 +211,9 @@ public class JCommanderController {
 	}
 
 	public void addNewDirectory(String path, String name) throws IOException {
+		if (name == null) {
+			return;
+		}
 		File f = new File(path, name);
 		if (f.exists()) {
 			return;
@@ -215,6 +226,60 @@ public class JCommanderController {
 	public void invalidate() {
 		notifySelectionChanged(WindowSide.LEFT, new File (mainWindow.getLeftPath().getText()));
 		notifySelectionChanged(WindowSide.RIGHT, new File (mainWindow.getRightPath().getText()));
+	}
+
+	public void copyFiles(JTable files, String from, String to) throws IOException {
+		String newLeftPath = mainWindow.getLeftPath().getText();
+		String newRightPath = mainWindow.getRightPath().getText();
+		for (int index : files.getSelectedRows()) {			
+			File f = (File) ((FilesTableModel) files.getModel()).getFileAt(index);					
+			System.out.println("Copy " + f.getName());
+			if (newLeftPath.contains(f.getCanonicalPath())) {
+				newLeftPath = Utils.removeFileName(newLeftPath);
+			}
+			if (newRightPath.contains(f.getCanonicalPath())) {
+				newRightPath = Utils.removeFileName(newRightPath);
+			}
+			if (f.canWrite()) {				
+				if (f.isDirectory()) {
+					checkDirs(f);
+					FileUtils.copyDirectoryToDirectory(f, new File(to));
+				} else if (f.isFile()) {
+					FileUtils.copyFileToDirectory(f, new File(to));
+				}
+			}			
+		}
+		notifySelectionChanged(WindowSide.LEFT, new File (newLeftPath));
+		notifySelectionChanged(WindowSide.RIGHT, new File (newRightPath));
+		
+	}
+	
+	public void moveFiles(JTable files, String from, String to) throws IOException {
+		String newLeftPath = mainWindow.getLeftPath().getText();
+		String newRightPath = mainWindow.getRightPath().getText();
+		for (int index : files.getSelectedRows()) {			
+			File f = (File) ((FilesTableModel) files.getModel()).getFileAt(index);					
+			System.out.println("Move " + f.getName());
+			if (newLeftPath.contains(f.getCanonicalPath())) {
+				newLeftPath = Utils.removeFileName(newLeftPath);
+			}
+			if (newRightPath.contains(f.getCanonicalPath())) {
+				newRightPath = Utils.removeFileName(newRightPath);
+			}
+			if (f.canWrite()) {				
+				if (f.isDirectory()) {
+					checkDirs(f);
+					FileUtils.copyDirectoryToDirectory(f, new File(to));
+					FileUtils.deleteDirectory(f);
+				} else if (f.isFile()) {
+					FileUtils.copyFileToDirectory(f, new File(to));
+					FileUtils.forceDelete(f);
+				}
+			}			
+		}
+		notifySelectionChanged(WindowSide.LEFT, new File (newLeftPath));
+		notifySelectionChanged(WindowSide.RIGHT, new File (newRightPath));
+		
 	}
 
 }

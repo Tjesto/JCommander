@@ -41,6 +41,7 @@ import com.ms.jcommander.controller.JCommanderController;
 import com.ms.jcommander.listeners.AbstractOnClickListener;
 import com.ms.jcommander.listeners.OnLocalesChangeListener;
 import com.ms.jcommander.menus.ContextMenuItem;
+import com.ms.jcommander.model.FilesTableModel;
 import com.ms.jcommander.model.ModelBinder.WindowSide;
 import com.ms.jcommander.utils.LanguageUtils;
 import com.ms.jcommander.utils.Strings;
@@ -50,6 +51,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import java.awt.Dimension;
+
 import javax.swing.JRadioButtonMenuItem;
 
 public class JCommanderWindow {
@@ -118,6 +120,21 @@ public class JCommanderWindow {
 		
 		JMenu fileSubmenu = new JMenu(Strings.menuFile());
 		menuBar.add(fileSubmenu);
+		
+		JMenuItem fileNewFolder = new JMenuItem(Strings.newFolder());
+		fileSubmenu.add(fileNewFolder);
+		fileNewFolder.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String name = getName();
+					controller.addNewDirectory(leftPath.getText(), name);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}						
+			}
+		});
 		
 		JMenu editSubmenu = new JMenu(Strings.menuEdit());
 		menuBar.add(editSubmenu);
@@ -272,8 +289,11 @@ public class JCommanderWindow {
 					isFirstClick[WindowSide.LEFT.getIndex()] = false;
 					return;
 				}
-				File selected = (File) leftFilesTable.getModel().getValueAt(
-						leftFilesTable.getSelectedRow(), 0);
+//				File selected = (File) leftFilesTable.getModel().getValueAt(
+//						leftFilesTable.getSelectedRow(), 0);
+				File selected = (File) ((FilesTableModel) leftFilesTable
+						.getModel()).getFileAt(leftFilesTable.getSelectedRow());
+				System.out.println(selected.getName());
 				if (selected.isDirectory()) {
 					controller
 							.notifySelectionChanged(WindowSide.LEFT, selected);
@@ -373,8 +393,8 @@ public class JCommanderWindow {
 					isFirstClick[WindowSide.RIGHT.getIndex()] = false;
 					return;
 				}
-				File selected = (File) rightFilesTable.getModel().getValueAt(
-						rightFilesTable.getSelectedRow(), 0);
+				File selected = (File) ((FilesTableModel) rightFilesTable.getModel()).getFileAt(
+						rightFilesTable.getSelectedRow());
 				if (selected.isDirectory()) {
 					controller.notifySelectionChanged(WindowSide.RIGHT,
 							selected);
@@ -418,6 +438,56 @@ public class JCommanderWindow {
 			}
 		});
 		
+		ContextMenuItem.createAndAdd(Strings.copy(), leftTableContextMenu, rightTableContextMenu,
+				new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							controller.copyFiles(leftFilesTable, leftPath.getText(), rightPath.getText());
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}						
+					}
+				},
+		
+		new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					controller.copyFiles(rightFilesTable, rightPath.getText(), leftPath.getText());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}						
+			}
+		});
+		
+		ContextMenuItem.createAndAdd(Strings.move(), leftTableContextMenu, rightTableContextMenu,
+				new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							controller.moveFiles(leftFilesTable, leftPath.getText(), rightPath.getText());
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}						
+					}
+				},
+		
+		new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					controller.moveFiles(rightFilesTable, rightPath.getText(), leftPath.getText());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}						
+			}
+		});
+		
 		ContextMenuItem.createAndAdd(Strings.delete(), leftTableContextMenu, rightTableContextMenu,
 				new ActionListener() {
 					
@@ -450,7 +520,7 @@ public class JCommanderWindow {
 	protected String getName() {		
 		return JOptionPane.showInputDialog(frame, Strings.chooseName());
 	}
-
+	
 	public JComboBox<File> getRootDirLeft() {
 		return rootDirLeft;
 	}
