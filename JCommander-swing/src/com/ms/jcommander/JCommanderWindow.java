@@ -38,6 +38,7 @@ import javax.swing.JButton;
 import javax.swing.BoxLayout;
 
 import com.ms.jcommander.controller.JCommanderController;
+import com.ms.jcommander.dialogs.DialogButton;
 import com.ms.jcommander.listeners.AbstractOnClickListener;
 import com.ms.jcommander.listeners.OnLocalesChangeListener;
 import com.ms.jcommander.menus.ContextMenuItem;
@@ -53,6 +54,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Dimension;
 
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JProgressBar;
 
 public class JCommanderWindow {
 
@@ -71,6 +73,8 @@ public class JCommanderWindow {
 	protected boolean[] isFirstClick = new boolean[] { true, true };
 	protected int[] lastSelected = new int[2];
 	private static JCommanderController controller;
+	private JProgressBar progress;
+	private JLabel currentAction;
 
 	/**
 	 * Launch the application.
@@ -362,6 +366,18 @@ public class JCommanderWindow {
 		final JPopupMenu rightTableContextMenu = new JPopupMenu();
 		initializePopupMenus(leftTableContextMenu,rightTableContextMenu);
 		rightPanel.add(rightTableContextMenu, BorderLayout.SOUTH);				
+		
+		JPanel statusBarPanel = new JPanel();
+		frame.getContentPane().add(statusBarPanel, BorderLayout.SOUTH);
+		statusBarPanel.setLayout(new BorderLayout(0, 0));
+		
+		currentAction = new JLabel("");
+		statusBarPanel.add(currentAction, BorderLayout.CENTER);
+		
+		progress = new JProgressBar();
+		progress.setMaximum(100);
+		progress.setVisible(false);
+		statusBarPanel.add(progress, BorderLayout.EAST);
 		rightFilesTable.addMouseListener(new AbstractOnClickListener() {
 
 			@Override
@@ -406,6 +422,14 @@ public class JCommanderWindow {
 			}
 		});
 
+	}
+
+	public JProgressBar getProgress() {
+		return progress;
+	}
+
+	public JLabel getCurrentAction() {
+		return currentAction;
 	}
 
 	private void initializePopupMenus(JPopupMenu leftTableContextMenu,
@@ -583,6 +607,29 @@ public class JCommanderWindow {
 			
 		}
 		
+	}
+
+	public DialogButton generateMovePositiveAction() {		
+		return new DialogButton(Strings.backgroundButton(), new Runnable() {
+
+			@Override
+			public void run() {
+				controller.moveToBackground();
+			}
+			
+		});
+	}
+
+	public DialogButton getStandardAbortAction() {		
+		return new DialogButton(Strings.abortButton(), new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println("Abort");
+				controller.abort();
+			}
+			
+		});
 	}
 	
 

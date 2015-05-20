@@ -83,5 +83,17 @@ public class Strings {
 	public static String move() {
 		return getString("move");
 	}
+	
+	public static String moveMessage() {
+		return getString("move.dialog.message");
+	}
+	
+	public static String backgroundButton() {
+		return getString("possitive.label");
+	}
+	
+	public static String abortButton() {
+		return getString("negative.label");
+	}
 
 }

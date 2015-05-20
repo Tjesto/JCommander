@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowSorter;
@@ -21,6 +22,8 @@ import javax.swing.table.TableRowSorter;
 import org.apache.commons.io.FileUtils;
 
 import com.ms.jcommander.JCommanderWindow;
+import com.ms.jcommander.dialogs.JCommanderProgressDialog;
+import com.ms.jcommander.dialogs.JCommanderProgressDialog.OnDisposeListener;
 import com.ms.jcommander.model.FilesTableModel;
 import com.ms.jcommander.model.ModelBinder.WindowSide;
 import com.ms.jcommander.model.RootDirectoriesModelBinder;
@@ -28,7 +31,7 @@ import com.ms.jcommander.utils.Strings;
 import com.ms.jcommander.utils.Utils;
 import com.sun.javafx.binding.StringFormatter;
 
-public class JCommanderController {
+public class JCommanderController implements OnDisposeListener {
 	
 	private final JCommanderWindow mainWindow;
 	
@@ -41,6 +44,9 @@ public class JCommanderController {
 	private TableRowSorter<FilesTableModel> sorter;
 	
 	private int sortedColumnNum = 0;
+	
+	private String newLeftPath;
+	private String newRightPath;
 	
 	private class FilesRowSorter extends TableRowSorter<FilesTableModel> {
 		
@@ -101,6 +107,10 @@ public class JCommanderController {
 			return dates;
 		}
 	};
+
+	private volatile boolean isAborted;
+
+	private JCommanderProgressDialog dialog;
 
 	public JCommanderController(JCommanderWindow windowRef) {
 		mainWindow = windowRef;
@@ -175,28 +185,50 @@ public class JCommanderController {
 	}
 
 	public void removeFiles(JTable table) throws IOException {
-		String newLeftPath = mainWindow.getLeftPath().getText();
-		String newRightPath = mainWindow.getRightPath().getText();
-		for (int index : table.getSelectedRows()) {			
-			File f = (File) ((FilesTableModel) table.getModel()).getFileAt(index);					
-			System.out.println(f.getName());
-			if (newLeftPath.contains(f.getCanonicalPath())) {
-				newLeftPath = Utils.removeFileName(newLeftPath);
-			}
-			if (newRightPath.contains(f.getCanonicalPath())) {
-				newRightPath = Utils.removeFileName(newRightPath);
-			}
-			if (f.canWrite()) {				
-				if (f.isDirectory()) {
-					checkDirs(f);
-					FileUtils.deleteDirectory(f);
-				} else if (f.isFile()) {
-					FileUtils.forceDelete(f);
+		isAborted = false;
+		dialog = JCommanderProgressDialog.show(Strings.copy(),
+				Strings.moveMessage(), table.getSelectedRowCount(),
+				mainWindow.generateMovePositiveAction(),
+				mainWindow.getStandardAbortAction());
+		dialog.setOnDisposeListener(this);
+		new Thread(new Runnable() {
+			public void run() {
+				newLeftPath = mainWindow.getLeftPath().getText();
+				newRightPath = mainWindow.getRightPath().getText();
+				int i = 1;
+				for (int index : table.getSelectedRows()) {
+					File f = (File) ((FilesTableModel) table.getModel())
+							.getFileAt(index);
+					if (isAborted) {
+						break;
+					}
+					try {
+						System.out.println(f.getName());
+						if (newLeftPath.contains(f.getCanonicalPath())) {
+							newLeftPath = Utils.removeFileName(newLeftPath);
+						}
+						if (newRightPath.contains(f.getCanonicalPath())) {
+							newRightPath = Utils.removeFileName(newRightPath);
+						}
+						if (f.canWrite()) {
+							if (f.isDirectory()) {
+								checkDirs(f);
+								FileUtils.deleteDirectory(f);
+							} else if (f.isFile()) {
+								FileUtils.forceDelete(f);
+							}
+							updateProgress(i);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						i++;
+					}
+
 				}
-			}			
-		}
-		notifySelectionChanged(WindowSide.LEFT, new File (newLeftPath));
-		notifySelectionChanged(WindowSide.RIGHT, new File (newRightPath));
+			}
+		}).start();
+		disposed();
 	}
 	
 	private void checkDirs(File f) {
@@ -229,57 +261,124 @@ public class JCommanderController {
 	}
 
 	public void copyFiles(JTable files, String from, String to) throws IOException {
-		String newLeftPath = mainWindow.getLeftPath().getText();
-		String newRightPath = mainWindow.getRightPath().getText();
-		for (int index : files.getSelectedRows()) {			
-			File f = (File) ((FilesTableModel) files.getModel()).getFileAt(index);					
-			System.out.println("Copy " + f.getName());
-			if (newLeftPath.contains(f.getCanonicalPath())) {
-				newLeftPath = Utils.removeFileName(newLeftPath);
-			}
-			if (newRightPath.contains(f.getCanonicalPath())) {
-				newRightPath = Utils.removeFileName(newRightPath);
-			}
-			if (f.canWrite()) {				
-				if (f.isDirectory()) {
-					checkDirs(f);
-					FileUtils.copyDirectoryToDirectory(f, new File(to));
-				} else if (f.isFile()) {
-					FileUtils.copyFileToDirectory(f, new File(to));
+		isAborted = false;
+		dialog = JCommanderProgressDialog.show(Strings.copy(), Strings.moveMessage(), files.getSelectedRowCount(), mainWindow.generateMovePositiveAction(), mainWindow.getStandardAbortAction());
+		dialog.setOnDisposeListener(this);		
+		new Thread(new Runnable() {
+			public void run() {
+				newLeftPath = mainWindow.getLeftPath().getText();
+				newRightPath = mainWindow.getRightPath().getText();
+				int i = 1;
+				for (int index : files.getSelectedRows()) {
+					File f = (File) ((FilesTableModel) files.getModel())
+							.getFileAt(index);
+					if (isAborted) {
+						break;
+					}
+					try {
+						System.out.println("Copy " + f.getName());
+						if (newLeftPath.contains(f.getCanonicalPath())) {
+							newLeftPath = Utils.removeFileName(newLeftPath);
+						}
+						if (newRightPath.contains(f.getCanonicalPath())) {
+							newRightPath = Utils.removeFileName(newRightPath);
+						}
+						if (f.canWrite()) {
+							if (f.isDirectory()) {
+								checkDirs(f);
+								FileUtils.copyDirectoryToDirectory(f, new File(
+										to));
+							} else if (f.isFile()) {
+								FileUtils.copyFileToDirectory(f, new File(to));
+							}
+							updateProgress(i);
+						}						
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						i++;
+					}
+
 				}
-			}			
-		}
-		notifySelectionChanged(WindowSide.LEFT, new File (newLeftPath));
-		notifySelectionChanged(WindowSide.RIGHT, new File (newRightPath));
+			}
+		}).start();
+		disposed();
 		
 	}
 	
-	public void moveFiles(JTable files, String from, String to) throws IOException {
-		String newLeftPath = mainWindow.getLeftPath().getText();
-		String newRightPath = mainWindow.getRightPath().getText();
-		for (int index : files.getSelectedRows()) {			
-			File f = (File) ((FilesTableModel) files.getModel()).getFileAt(index);					
-			System.out.println("Move " + f.getName());
-			if (newLeftPath.contains(f.getCanonicalPath())) {
-				newLeftPath = Utils.removeFileName(newLeftPath);
-			}
-			if (newRightPath.contains(f.getCanonicalPath())) {
-				newRightPath = Utils.removeFileName(newRightPath);
-			}
-			if (f.canWrite()) {				
-				if (f.isDirectory()) {
-					checkDirs(f);
-					FileUtils.copyDirectoryToDirectory(f, new File(to));
-					FileUtils.deleteDirectory(f);
-				} else if (f.isFile()) {
-					FileUtils.copyFileToDirectory(f, new File(to));
-					FileUtils.forceDelete(f);
+	public void moveFiles(JTable files, String from, String to) throws IOException {		
+		isAborted = false;
+		dialog = JCommanderProgressDialog.show(Strings.move(), Strings.moveMessage(), files.getSelectedRowCount(), mainWindow.generateMovePositiveAction(), mainWindow.getStandardAbortAction());
+		dialog.setOnDisposeListener(this);
+		new Thread(new Runnable() {					
+
+		public void run() {
+			newLeftPath = mainWindow.getLeftPath().getText();
+			newRightPath = mainWindow.getRightPath().getText();
+				int i = 1;
+				for (int index : files.getSelectedRows()) {
+					if (isAborted) {
+						break;
+					}
+					try {
+						File f = (File) ((FilesTableModel) files.getModel())
+								.getFileAt(index);
+						System.out.println("Move " + f.getName());
+						if (newLeftPath.contains(f.getCanonicalPath())) {
+							newLeftPath = Utils.removeFileName(newLeftPath);
+						}
+
+						if (newRightPath.contains(f.getCanonicalPath())) {
+							newRightPath = Utils.removeFileName(newRightPath);
+						}
+						if (f.canWrite()) {
+							if (f.isDirectory()) {
+								checkDirs(f);
+								FileUtils.copyDirectoryToDirectory(f, new File(
+										to));
+								FileUtils.deleteDirectory(f);
+							} else if (f.isFile()) {
+								FileUtils.copyFileToDirectory(f, new File(to));
+								FileUtils.forceDelete(f);
+							}
+							updateProgress(i);
+						}						
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						i++;
+					}
 				}
-			}			
+			}
+		}).start();
+		isAborted = false;
+				
+	}
+
+	protected void updateProgress(int i) {
+		double val = dialog.updateProgress(i);
+		mainWindow.getProgress().setValue((int) val);
+		if ((int) val == 100) {
+			mainWindow.getProgress().setValue(0);
+			mainWindow.getProgress().setVisible(false);
+			disposed();			
 		}
+		
+	}
+
+	public void abort() {
+		isAborted = true;
+	}
+
+	@Override
+	public void disposed() {
 		notifySelectionChanged(WindowSide.LEFT, new File (newLeftPath));
 		notifySelectionChanged(WindowSide.RIGHT, new File (newRightPath));
-		
+	}
+
+	public void moveToBackground() {
+		dialog.dispose();
+		mainWindow.getProgress().setVisible(true);		
 	}
 
 }
