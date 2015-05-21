@@ -95,5 +95,31 @@ public class Strings {
 	public static String abortButton() {
 		return getString("negative.label");
 	}
+	
+	public static String removeMessage() {
+		return getString("remove.dialog.message");
+	}
+	
+	public static String copyMessage() {
+		return getString("copy.dialog.message");
+	}
+
+	public static String dirExists(String name, String path) {
+		StringBuilder b = new StringBuilder();
+		b.append(getString("dir.exist.begining")).append(exists(name, path)).append(getString("dir.exist.end"));
+		return b.toString();
+	}
+	
+	public static String fileExists(String name, String path) {
+		StringBuilder b = new StringBuilder();
+		b.append(getString("file.exist.begining")).append(exists(name, path)).append(getString("file.exist.end"));
+		return b.toString();
+	}
+	
+	private static String exists(String name, String path) {
+		StringBuilder b = new StringBuilder();
+		b.append(name).append(' ').append(getString("exists.in")).append(' ').append(path).append(".\n");
+		return b.toString();
+	}
 
 }

@@ -228,7 +228,6 @@ public class JCommanderController implements OnDisposeListener {
 				}
 			}
 		}).start();
-		disposed();
 	}
 	
 	private void checkDirs(File f) {
@@ -248,7 +247,10 @@ public class JCommanderController implements OnDisposeListener {
 		}
 		File f = new File(path, name);
 		if (f.exists()) {
-			return;
+			System.out.println("exists " + name);
+			if (JOptionPane.showConfirmDialog(mainWindow.getFrame(), Strings.dirExists(name, path), "", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+				return;
+			}			
 		}
 		boolean s = f.mkdirs();
 		notifySelectionChanged(WindowSide.LEFT, new File (mainWindow.getLeftPath().getText()));
@@ -285,10 +287,18 @@ public class JCommanderController implements OnDisposeListener {
 						}
 						if (f.canWrite()) {
 							if (f.isDirectory()) {
+								if (new File(to, f.getName()).exists() && doNotCopyThis(Strings.dirExists(f.getName(), to))) {
+									updateProgress(i++);
+									continue;
+								}
 								checkDirs(f);
 								FileUtils.copyDirectoryToDirectory(f, new File(
 										to));
 							} else if (f.isFile()) {
+								if (new File(to, f.getName()).exists() && doNotCopyThis(Strings.fileExists(f.getName(), to))) {
+									updateProgress(i++);
+									continue;
+								}
 								FileUtils.copyFileToDirectory(f, new File(to));
 							}
 							updateProgress(i);
@@ -301,9 +311,12 @@ public class JCommanderController implements OnDisposeListener {
 
 				}
 			}
-		}).start();
-		disposed();
+		}).start();		
 		
+	}
+	
+	protected synchronized boolean doNotCopyThis(String message) {		
+		return JOptionPane.showConfirmDialog(mainWindow.getFrame(), message, "", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
 	}
 	
 	public void moveFiles(JTable files, String from, String to) throws IOException {		
@@ -333,11 +346,19 @@ public class JCommanderController implements OnDisposeListener {
 						}
 						if (f.canWrite()) {
 							if (f.isDirectory()) {
+								if (new File(to, f.getName()).exists() && doNotCopyThis(Strings.dirExists(f.getName(), to))) {
+									updateProgress(i++);
+									continue;
+								}
 								checkDirs(f);
 								FileUtils.copyDirectoryToDirectory(f, new File(
 										to));
 								FileUtils.deleteDirectory(f);
 							} else if (f.isFile()) {
+								if (new File(to, f.getName()).exists() && doNotCopyThis(Strings.fileExists(f.getName(), to))) {
+									updateProgress(i++);
+									continue;
+								}
 								FileUtils.copyFileToDirectory(f, new File(to));
 								FileUtils.forceDelete(f);
 							}

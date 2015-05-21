@@ -10,15 +10,19 @@ public class Utils {
 	
 	private static final String SEPARATOR = IS_WINDOWS ? "\\" : "/";
 
-	public static final long DOUBLE_CLICK_PERIOD = 800;
+	public static final long DOUBLE_CLICK_PERIOD = 500;
 	
 	public static String removeFileName(String path) {
 		int lastSlash = path.lastIndexOf(SEPARATOR);
 		if (lastSlash == path.length() -1) {
 			lastSlash = path.substring(0, path.length() - 2).lastIndexOf(SEPARATOR);
 		}
-		if (IS_WINDOWS && path.length() == 3) {
-			return path;
+		if (IS_WINDOWS) {
+			if (path.length() == 3) {
+				return path;
+			} else if (lastSlash <= 2) {
+				lastSlash += 1;
+			}
 		}
 		return path.substring(0, lastSlash);
 		
