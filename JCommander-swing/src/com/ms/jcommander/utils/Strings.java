@@ -122,4 +122,16 @@ public class Strings {
 		return b.toString();
 	}
 
+	public static String refresh() {
+		return getString("refresh");
+	}
+
+	public static String noSelection() {
+		return getString("no.selection");
+	}
+
+	public static String sure() {
+		return getString("sure");
+	}
+
 }

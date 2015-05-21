@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import com.ms.jcommander.JCommanderWindow;
 import com.ms.jcommander.dialogs.JCommanderProgressDialog;
 import com.ms.jcommander.dialogs.JCommanderProgressDialog.OnDisposeListener;
+import com.ms.jcommander.dialogs.Toast;
 import com.ms.jcommander.model.FilesTableModel;
 import com.ms.jcommander.model.ModelBinder.WindowSide;
 import com.ms.jcommander.model.RootDirectoriesModelBinder;
@@ -186,8 +187,16 @@ public class JCommanderController implements OnDisposeListener {
 
 	public void removeFiles(JTable table) throws IOException {
 		isAborted = false;
+		
+		if (table.getSelectedRows().length == 0 ) {
+			Toast.show(Strings.noSelection(), Toast.LENGHT_LONG);
+			return;
+		}
+		if (JOptionPane.showConfirmDialog(mainWindow.getFrame(), Strings.sure(), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+			return;
+		}
 		dialog = JCommanderProgressDialog.show(Strings.copy(),
-				Strings.moveMessage(), table.getSelectedRowCount(),
+				Strings.removeMessage(), table.getSelectedRowCount(),
 				mainWindow.generateMovePositiveAction(),
 				mainWindow.getStandardAbortAction());
 		dialog.setOnDisposeListener(this);
@@ -264,7 +273,12 @@ public class JCommanderController implements OnDisposeListener {
 
 	public void copyFiles(JTable files, String from, String to) throws IOException {
 		isAborted = false;
-		dialog = JCommanderProgressDialog.show(Strings.copy(), Strings.moveMessage(), files.getSelectedRowCount(), mainWindow.generateMovePositiveAction(), mainWindow.getStandardAbortAction());
+		System.out.println(files + "\n" + files.getSelectedRowCount() + "\n" + files.getSelectedRows().length);
+		if (files.getSelectedRows().length == 0) {
+			Toast.show(Strings.noSelection(), Toast.LENGHT_LONG);
+			return;
+		}
+		dialog = JCommanderProgressDialog.show(Strings.copy(), Strings.copyMessage(), files.getSelectedRowCount(), mainWindow.generateMovePositiveAction(), mainWindow.getStandardAbortAction());
 		dialog.setOnDisposeListener(this);		
 		new Thread(new Runnable() {
 			public void run() {
@@ -321,6 +335,10 @@ public class JCommanderController implements OnDisposeListener {
 	
 	public void moveFiles(JTable files, String from, String to) throws IOException {		
 		isAborted = false;
+		if (files.getSelectedRows().length == 0) {
+			Toast.show(Strings.noSelection(), Toast.LENGHT_LONG);
+			return;
+		}
 		dialog = JCommanderProgressDialog.show(Strings.move(), Strings.moveMessage(), files.getSelectedRowCount(), mainWindow.generateMovePositiveAction(), mainWindow.getStandardAbortAction());
 		dialog.setOnDisposeListener(this);
 		new Thread(new Runnable() {					

@@ -31,6 +31,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Locale;
 
 import javax.swing.JLabel;
@@ -93,7 +94,15 @@ public class JCommanderWindow {
 				}
 			}
 		});
-
+		/*final UncaughtExceptionHandler def = Thread.getDefaultUncaughtExceptionHandler();
+		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+			
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				JOptionPane.showMessageDialog(windowRef.frame, e.toString());
+				def.uncaughtException(t, e);
+			}
+		});*/
 	}
 
 	/**
@@ -189,20 +198,111 @@ public class JCommanderWindow {
 			}
 		});
 		
-		LanguageUtils.languageUtils().addListener(new OnLocalesChangeListener() {
-			
-			@Override
-			public void onLocalesChanged() {
-				fileSubmenu.setText(Strings.menuFile());
-				editSubmenu.setText(Strings.menuEdit());
-				settingsSubmenu.setText(Strings.menuSettings());
-				languageSettings.setText(Strings.menuLanguage());
-			}
-		});
-
 		JToolBar toolBar = new JToolBar();
 		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
-
+		
+		JButton newFolderTB = new JButton(Strings.newFolder());
+		toolBar.add(newFolderTB);
+		
+		newFolderTB.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String name = getName();
+					controller.addNewDirectory(leftPath.getText(), name);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}						
+			}
+		});
+		
+		JButton refreshTB = new JButton(Strings.refresh());
+		toolBar.add(refreshTB);
+		
+		refreshTB.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.invalidate();
+			}
+		});
+		
+		JButton copyTB = new JButton(Strings.copy());
+		toolBar.add(copyTB);
+		
+		copyTB.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JTable table;
+				String from;
+				String to;
+				if (leftFilesTable.getSelectedRowCount() != 0) {
+					table = leftFilesTable;
+					from = leftPath.getText();
+					to = rightPath.getText();
+				} else {
+					table = rightFilesTable;
+					from = rightPath.getText();
+					to = leftPath.getText();
+				}
+				try {
+					controller.copyFiles(table, from, to);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}				
+			}
+		});
+		
+		JButton moveTB = new JButton(Strings.move());
+		toolBar.add(moveTB);
+		
+		moveTB.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JTable table;
+				String from;
+				String to;
+				if (leftFilesTable.getSelectedRowCount() != 0) {
+					table = leftFilesTable;
+					from = leftPath.getText();
+					to = rightPath.getText();
+				} else {
+					table = rightFilesTable;
+					from = rightPath.getText();
+					to = leftPath.getText();
+				}
+				try {
+					controller.moveFiles(table, from, to);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}				
+			}
+		});
+		
+		JButton removeTB = new JButton(Strings.delete());
+		toolBar.add(removeTB);
+		
+		removeTB.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JTable table;
+				if (leftFilesTable.getSelectedRowCount() != 0) {
+					table = leftFilesTable;
+				} else {
+					table = rightFilesTable;
+				}
+				try {
+					controller.removeFiles(table);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		
 		JPanel mainPanel = new JPanel();
 		frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		mainPanel.setLayout(new GridLayout(0, 2, 0, 0));
@@ -251,6 +351,7 @@ public class JCommanderWindow {
 		});
 
 		leftPath = new JTextField();
+		leftPath.setEditable(false);
 		panel_4.add(leftPath, BorderLayout.SOUTH);
 		leftPath.setColumns(10);
 
@@ -261,7 +362,7 @@ public class JCommanderWindow {
 		scrollPane.setViewportView(leftFilesTable);
 		
 		JPopupMenu leftTableContextMenu = new JPopupMenu();
-		leftPanel.add(leftTableContextMenu, BorderLayout.SOUTH);
+		leftPanel.add(leftTableContextMenu, BorderLayout.SOUTH);		
 		leftFilesTable.addMouseListener(new AbstractOnClickListener() {
 
 			@Override
@@ -354,6 +455,7 @@ public class JCommanderWindow {
 		});
 
 		rightPath = new JTextField();
+		rightPath.setEditable(false);
 		panel_5.add(rightPath, BorderLayout.SOUTH);
 		rightPath.setColumns(10);
 
@@ -365,7 +467,24 @@ public class JCommanderWindow {
 		
 		final JPopupMenu rightTableContextMenu = new JPopupMenu();
 		initializePopupMenus(leftTableContextMenu,rightTableContextMenu);
-		rightPanel.add(rightTableContextMenu, BorderLayout.SOUTH);				
+		rightPanel.add(rightTableContextMenu, BorderLayout.SOUTH);		
+		
+		LanguageUtils.languageUtils().addListener(new OnLocalesChangeListener() {
+			
+			@Override
+			public void onLocalesChanged() {
+				fileSubmenu.setText(Strings.menuFile());
+				editSubmenu.setText(Strings.menuEdit());
+				settingsSubmenu.setText(Strings.menuSettings());
+				languageSettings.setText(Strings.menuLanguage());
+				fileNewFolder.setText(Strings.newFolder());
+				newFolderTB.setText(Strings.newFolder());
+				removeTB.setText(Strings.delete());
+				copyTB.setText(Strings.copy());
+				moveTB.setText(Strings.move());
+				initializePopupMenus(leftTableContextMenu,rightTableContextMenu);
+			}
+		});
 		
 		JPanel statusBarPanel = new JPanel();
 		frame.getContentPane().add(statusBarPanel, BorderLayout.SOUTH);
@@ -434,7 +553,8 @@ public class JCommanderWindow {
 
 	private void initializePopupMenus(JPopupMenu leftTableContextMenu,
 			JPopupMenu rightTableContextMenu) {	
-		
+		leftTableContextMenu.removeAll();
+		rightTableContextMenu.removeAll();
 		ContextMenuItem.createAndAdd(Strings.newFolder(), leftTableContextMenu, rightTableContextMenu,
 				new ActionListener() {
 					

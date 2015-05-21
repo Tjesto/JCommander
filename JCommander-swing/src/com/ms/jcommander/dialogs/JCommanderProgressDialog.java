@@ -67,7 +67,7 @@ public class JCommanderProgressDialog extends JDialog {
 
 	private void updateMessage(double value) {
 		StringBuilder b = new StringBuilder();
-		b.append(message != null ? message : "").append('\n');
+		b.append(mainMessage != null ? mainMessage : "").append('\n');
 		if (current >= 0 && maxValue > 0) {
 			b.append(current).append(' ').append(Strings.of()).append(' ').append(maxValue);
 		}
