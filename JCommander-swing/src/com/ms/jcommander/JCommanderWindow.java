@@ -149,9 +149,6 @@ public class JCommanderWindow {
 			}
 		});
 		
-		JMenu editSubmenu = new JMenu(Strings.menuEdit());
-		menuBar.add(editSubmenu);
-		
 		JMenu settingsSubmenu = new JMenu(Strings.menuSettings());
 		menuBar.add(settingsSubmenu);
 		
@@ -474,7 +471,6 @@ public class JCommanderWindow {
 			@Override
 			public void onLocalesChanged() {
 				fileSubmenu.setText(Strings.menuFile());
-				editSubmenu.setText(Strings.menuEdit());
 				settingsSubmenu.setText(Strings.menuSettings());
 				languageSettings.setText(Strings.menuLanguage());
 				fileNewFolder.setText(Strings.newFolder());
