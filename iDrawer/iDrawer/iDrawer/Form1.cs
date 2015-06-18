@@ -63,7 +63,9 @@ namespace iDrawer
                         if (plugin != null)
                         {
                             tools.Add(plugin);
-                            toolbar.Items.Add(plugin.getItem());
+                            ToolStripItem item = plugin.getItem();
+                            item.BackColor = SystemColors.ControlDark;
+                            toolbar.Items.Add(item);
                             plugin.registerOnToolChangedListener(this);
                         }
                     }
