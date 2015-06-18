@@ -1,0 +1,4 @@
+O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\bin\Release\ClassLibrary1.dll
+O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\bin\Release\ClassLibrary1.pdb
+O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\obj\Release\ClassLibrary1.dll
+O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\obj\Release\ClassLibrary1.pdb

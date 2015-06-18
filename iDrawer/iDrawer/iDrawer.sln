@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginsAPI", "ClassLibrary1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pen", "Pen\Pen.csproj", "{E53B2372-6543-4123-9B8B-8B6C9F0338F0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometrical", "Geometrical\Geometrical.csproj", "{2A144833-550B-492C-BACF-2F654AEF6C1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{E53B2372-6543-4123-9B8B-8B6C9F0338F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E53B2372-6543-4123-9B8B-8B6C9F0338F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E53B2372-6543-4123-9B8B-8B6C9F0338F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A144833-550B-492C-BACF-2F654AEF6C1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A144833-550B-492C-BACF-2F654AEF6C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A144833-550B-492C-BACF-2F654AEF6C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A144833-550B-492C-BACF-2F654AEF6C1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -27,14 +27,16 @@ namespace iDrawer
         private int x;
         private int y;        
         delegate void SetTextCallback(string text); 
-        delegate void SetImageCallback(Image image);
+        delegate void SetImageCallback(Image image);       
         private const int DEFAULT_WIDTH = 2;
         private const string SAVING = "Saving";
         private const string SAVED = "Saved";
         private const string OPENING = "Opening";
         private const string OPENED = "Opened";
         private const string EDITED = "Edited";
-        private const string NEW = "New";        
+        private const string NEW = "New";
+        private const string NEW_IMAGE = "New Image";
+        private volatile bool shouldCloseAfterSave;
 
         public Form1()
         {
@@ -99,7 +101,7 @@ namespace iDrawer
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            save();
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e)
@@ -176,7 +178,7 @@ namespace iDrawer
 
         private void toolStripComboBox1_Click(object sender, EventArgs e)
         {
-            save();
+            //empty
         }
 
         public void notifyChanged(DrawingTool newTool)
@@ -188,9 +190,9 @@ namespace iDrawer
         private void panel2_MouseDown(object sender, MouseEventArgs e)
         {
             isPainting = true;
-            currentTool.onDrawStarted(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text));
             x = e.X;
             y = e.Y;
+            currentTool.onDrawStarted(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text));            
             setStatusLabel(EDITED);
         }
 
@@ -202,7 +204,7 @@ namespace iDrawer
 
         private void panel2_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isPainting && currentTool != null) 
+            if (isPainting && currentTool != null && !toolStripLabel1.Text.Equals(SAVING) && !toolStripLabel1.Text.Equals(OPENING)) 
             {
                 currentTool.draw(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text));
                 currentTool.draw(currentPen, currentBrush, Graphics.FromImage(current), x, y, e.X, e.Y, getSize(dotSizeBox.Text));
@@ -230,14 +232,13 @@ namespace iDrawer
 
         private void openMenuItem_Click(object sender, EventArgs e)
         {
-            if (!toolStripStatusLabel1.Text.Equals(EDITED))
+            if (toolStripStatusLabel1.Text.Equals(EDITED))
             {
-                return;
-            }
-            if (editedImageAsked())
-            {
-                return;
-            }
+                if (editedImageAsked())
+                {
+                    return;
+                }
+            }            
             openFileDialog1.ShowDialog();
         }
 
@@ -263,6 +264,23 @@ namespace iDrawer
             current.Save(saveFileDialog1.FileName, ImageFormat.Bmp);
             setName(saveFileDialog1.FileName);
             setStatusLabel(SAVED);
+            if (shouldCloseAfterSave)
+            {
+                realClose("");
+            }
+        }
+
+        private void realClose(string empty)
+        {
+            if (this.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(realClose);
+                this.Invoke(d, new object[] {""});
+            }
+            else
+            {
+                this.Close();
+            }
         }
 
         private void setStatusLabel(string label)
@@ -334,6 +352,7 @@ namespace iDrawer
             panel2.BackColor = Color.White;
             Graphics.FromImage(current).Clear(Color.White);
             panel2.Invalidate();
+            setName(NEW_IMAGE);
         }
 
         private bool editedImageAsked()
@@ -350,17 +369,67 @@ namespace iDrawer
             return false;
         }
 
+        private DialogResult rEditedImageAsked()
+        {
+            DialogResult r = MessageBox.Show("Image was edited, do you want to save it?", "Do you want to save you image?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+            if (r == DialogResult.Cancel)
+            {
+                return r;
+            }
+            if (r == DialogResult.Yes)
+            {
+                save();
+            }
+            return r;
+        }
+
         private void save()
         {
+            if (!toolStripStatusLabel1.Text.Equals(EDITED))
+            {
+                return;
+            }
+            panel2.Invalidate();
+            if (Text.Equals(NEW_IMAGE))
+            {
+                saveFileDialog1.ShowDialog();
+            }
+            else
+            {
+                new Thread(new ParameterizedThreadStart(simpleSave)).Start(Text);
+            }
 
+        }
+
+        private void simpleSave(object oName) 
+        {
+            string name = (string)oName;
+            setStatusLabel(SAVING);
+            File.Delete(name);
+            current.Save(name, ImageFormat.Bmp);            
+            setStatusLabel(SAVED);
+            if (shouldCloseAfterSave)
+            {
+                realClose("");
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (toolStripStatusLabel1.Text.Equals(EDITED) && editedImageAsked())
+
+            if (toolStripStatusLabel1.Text.Equals(EDITED))
             {
-                e.Cancel = true;
-            }            
+                DialogResult r = rEditedImageAsked();
+                if (r == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+                if (r == DialogResult.Yes)
+                {
+                    e.Cancel = true;
+                    shouldCloseAfterSave = true;
+                }
+            }
         }
     }
 }
