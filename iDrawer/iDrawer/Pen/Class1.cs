@@ -24,6 +24,16 @@ namespace Pen
             g.FillEllipse(b, x, y, width, width);
         }
 
+        public void onDrawStarted(System.Drawing.Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        {
+            draw(p, b, g, startX, startY, x, y, width);
+        }
+
+        public void onDrawFinished(System.Drawing.Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        {
+            draw(p, b, g, startX, startY, x, y, width);
+        }
+
         public ToolStripItem getItem()
         {
             ToolStripItem pluginItem = new ToolStripButton();

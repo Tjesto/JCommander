@@ -17,6 +17,8 @@ namespace iDrawer.Plugins
     public interface DrawingTool : Base
     {
         void draw(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width);
+        void onDrawStarted(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width);
+        void onDrawFinished(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width);
         ToolStripItem getItem();
         void registerOnToolChangedListener(OnToolChangedListener listener);
     }
