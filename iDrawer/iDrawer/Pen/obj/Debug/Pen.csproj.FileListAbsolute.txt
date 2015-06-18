@@ -1,0 +1,7 @@
+O:\Projects\TPAL\iDrawer\iDrawer\Pen\obj\Debug\Pen.csprojResolveAssemblyReference.cache
+O:\Projects\TPAL\iDrawer\iDrawer\Pen\bin\Debug\Pen.dll
+O:\Projects\TPAL\iDrawer\iDrawer\Pen\bin\Debug\Pen.pdb
+O:\Projects\TPAL\iDrawer\iDrawer\Pen\bin\Debug\ClassLibrary1.dll
+O:\Projects\TPAL\iDrawer\iDrawer\Pen\bin\Debug\ClassLibrary1.pdb
+O:\Projects\TPAL\iDrawer\iDrawer\Pen\obj\Debug\Pen.dll
+O:\Projects\TPAL\iDrawer\iDrawer\Pen\obj\Debug\Pen.pdb

@@ -1,0 +1,11 @@
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\bin\Debug\iDrawer.exe.config
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\bin\Debug\iDrawer.exe
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\bin\Debug\iDrawer.pdb
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\obj\Debug\iDrawer.csprojResolveAssemblyReference.cache
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\obj\Debug\iDrawer.Form1.resources
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\obj\Debug\iDrawer.Properties.Resources.resources
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\obj\Debug\iDrawer.csproj.GenerateResource.Cache
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\obj\Debug\iDrawer.exe
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\obj\Debug\iDrawer.pdb
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\bin\Debug\ClassLibrary1.dll
+O:\Projects\TPAL\iDrawer\iDrawer\iDrawer\bin\Debug\ClassLibrary1.pdb
