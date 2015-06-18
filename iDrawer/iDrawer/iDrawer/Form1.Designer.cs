@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.statusbar = new System.Windows.Forms.StatusStrip();
+            this.operationProgress = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.menu = new System.Windows.Forms.MenuStrip();
             this.fileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.newMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,6 +41,8 @@
             this.dotSizeBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.fillColorPane = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
             this.purpleBut = new System.Windows.Forms.Button();
             this.violetBut = new System.Windows.Forms.Button();
             this.selectedColorPane = new System.Windows.Forms.Panel();
@@ -54,8 +58,6 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.operationProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.statusbar.SuspendLayout();
             this.menu.SuspendLayout();
             this.toolbar.SuspendLayout();
@@ -73,6 +75,17 @@
             this.statusbar.TabIndex = 0;
             this.statusbar.Text = "statusStrip1";
             this.statusbar.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.statusbar_ItemClicked);
+            // 
+            // operationProgress
+            // 
+            this.operationProgress.Name = "operationProgress";
+            this.operationProgress.Size = new System.Drawing.Size(100, 16);
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(31, 17);
+            this.toolStripStatusLabel1.Text = "New";
             // 
             // menu
             // 
@@ -159,6 +172,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.fillColorPane);
+            this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.purpleBut);
             this.panel1.Controls.Add(this.violetBut);
             this.panel1.Controls.Add(this.selectedColorPane);
@@ -175,6 +190,25 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(62, 515);
             this.panel1.TabIndex = 3;
+            // 
+            // fillColorPane
+            // 
+            this.fillColorPane.BackColor = System.Drawing.Color.Black;
+            this.fillColorPane.Location = new System.Drawing.Point(6, 232);
+            this.fillColorPane.Name = "fillColorPane";
+            this.fillColorPane.Size = new System.Drawing.Size(49, 48);
+            this.fillColorPane.TabIndex = 1;
+            this.fillColorPane.BackColorChanged += new System.EventHandler(this.fillColorPane_BackColorChanged);
+            this.fillColorPane.Click += new System.EventHandler(this.fillColorPane_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 216);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(46, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Fill Color";
             // 
             // purpleBut
             // 
@@ -206,6 +240,7 @@
             this.selectedColorPane.Size = new System.Drawing.Size(49, 48);
             this.selectedColorPane.TabIndex = 0;
             this.selectedColorPane.BackColorChanged += new System.EventHandler(this.selectedColorPane_BackColorChanged);
+            this.selectedColorPane.Click += new System.EventHandler(this.selectedColorPane_Click);
             // 
             // label1
             // 
@@ -327,17 +362,6 @@
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(31, 17);
-            this.toolStripStatusLabel1.Text = "New";
-            // 
-            // operationProgress
-            // 
-            this.operationProgress.Name = "operationProgress";
-            this.operationProgress.Size = new System.Drawing.Size(100, 16);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -395,6 +419,8 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ToolStripProgressBar operationProgress;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Panel fillColorPane;
+        private System.Windows.Forms.Label label2;
     }
 }
 

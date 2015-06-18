@@ -7,8 +7,8 @@
     <ProjectGuid>{D287F56F-FA40-444D-B30E-D7A050DC7E3B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClassLibrary1</RootNamespace>
-    <AssemblyName>ClassLibrary1</AssemblyName>
+    <RootNamespace>iDrawer.Plugins</RootNamespace>
+    <AssemblyName>iDrawerPluginsAPI</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

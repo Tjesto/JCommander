@@ -2,3 +2,4 @@ O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\bin\Debug\ClassLibrary1.dll
 O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\bin\Debug\ClassLibrary1.pdb
 O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\obj\Debug\ClassLibrary1.dll
 O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\obj\Debug\ClassLibrary1.pdb
+O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\obj\Debug\PluginsAPI.csprojResolveAssemblyReference.cache

@@ -15,19 +15,23 @@ using System.Threading;
 
 namespace iDrawer
 {
-    public partial class Form1 : Form, OnToolChangedListener
+    public partial class Form1 : Form, OnToolChangedListener, DrawingWindow
     {
+        #region fields
         private List<BasePlugin> plugins = new List<BasePlugin>();
         private List<DrawingTool> tools = new List<DrawingTool>();
         private volatile Bitmap current;
         private Pen currentPen = Pens.Black;
         private Brush currentBrush = Brushes.Black;
+        private Brush currentFillBrush = Brushes.Black;
+        private Panel colorChooser;
         private DrawingTool currentTool;
         private bool isPainting;
         private int x;
         private int y;        
         delegate void SetTextCallback(string text); 
-        delegate void SetImageCallback(Image image);       
+        delegate void SetImageCallback(Image image);
+        delegate void SetProgressCallback(int progress);       
         private const int DEFAULT_WIDTH = 2;
         private const string SAVING = "Saving";
         private const string SAVED = "Saved";
@@ -36,8 +40,9 @@ namespace iDrawer
         private const string EDITED = "Edited";
         private const string NEW = "New";
         private const string NEW_IMAGE = "New Image";
+        private const string OP_IN_PROGRESS = "Operation in progress";
         private volatile bool shouldCloseAfterSave;
-
+        #endregion
         public Form1()
         {
             InitializeComponent();
@@ -45,6 +50,7 @@ namespace iDrawer
             initializePlugins();
             current = new Bitmap(panel2.ClientSize.Width, panel2.ClientSize.Height);
             Graphics.FromImage(current).Clear(panel2.BackColor);
+            colorChooser = selectedColorPane;
         }
 
         private void initializeTools()
@@ -110,7 +116,7 @@ namespace iDrawer
         {
             e.Graphics.DrawImage(current, Point.Empty);
         }
-
+        #region colors choosing handling
         private void button1_Click(object sender, EventArgs e)
         {
             handleButtonClick(whiteBut);
@@ -118,7 +124,7 @@ namespace iDrawer
 
         private void handleButtonClick(Button color)
         {
-            selectedColorPane.BackColor = color.BackColor;
+            colorChooser.BackColor = color.BackColor;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -177,7 +183,7 @@ namespace iDrawer
         {            
             return new SolidBrush(color);
         }
-
+        #endregion
         private void toolStripComboBox1_Click(object sender, EventArgs e)
         {
             //empty
@@ -188,28 +194,30 @@ namespace iDrawer
             currentTool = newTool;
             toolStripLabel1.Text = "Selected tool: " + currentTool.getName();
         }
-
+        #region drawing
         private void panel2_MouseDown(object sender, MouseEventArgs e)
         {
             isPainting = true;
             x = e.X;
             y = e.Y;
-            currentTool.onDrawStarted(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text));            
+            currentTool.onDrawStarted(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text), currentFillBrush);
+            currentTool.onDrawStarted(currentPen, currentBrush, Graphics.FromImage(current), x, y, e.X, e.Y, getSize(dotSizeBox.Text), currentFillBrush);
             setStatusLabel(EDITED);
         }
 
         private void panel2_MouseUp(object sender, MouseEventArgs e)
         {
             isPainting = false;
-            currentTool.onDrawFinished(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text));
+            currentTool.onDrawFinished(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text), currentFillBrush);
+            currentTool.onDrawFinished(currentPen, currentBrush, Graphics.FromImage(current), x, y, e.X, e.Y, getSize(dotSizeBox.Text), currentFillBrush);
         }
 
         private void panel2_MouseMove(object sender, MouseEventArgs e)
         {
             if (isPainting && currentTool != null && !toolStripLabel1.Text.Equals(SAVING) && !toolStripLabel1.Text.Equals(OPENING)) 
             {
-                currentTool.draw(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text));
-                currentTool.draw(currentPen, currentBrush, Graphics.FromImage(current), x, y, e.X, e.Y, getSize(dotSizeBox.Text));
+                currentTool.draw(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text), currentFillBrush);
+                currentTool.draw(currentPen, currentBrush, Graphics.FromImage(current), x, y, e.X, e.Y, getSize(dotSizeBox.Text), currentFillBrush);
             }
         }
 
@@ -231,7 +239,7 @@ namespace iDrawer
             }
             return DEFAULT_WIDTH;
         }
-
+        #endregion
         private void openMenuItem_Click(object sender, EventArgs e)
         {
             if (toolStripStatusLabel1.Text.Equals(EDITED))
@@ -263,9 +271,13 @@ namespace iDrawer
         private void saveAs()
         {
             setStatusLabel(SAVING);
+            setProgressValue(1 * 100 / 5);
             current.Save(saveFileDialog1.FileName, ImageFormat.Bmp);
+            setProgressValue(3 * 100 / 5);
             setName(saveFileDialog1.FileName);
+            setProgressValue(4 * 100 / 5);
             setStatusLabel(SAVED);
+            setProgressValue(5 * 100 / 5);
             if (shouldCloseAfterSave)
             {
                 realClose("");
@@ -327,11 +339,17 @@ namespace iDrawer
         private void open()
         {
             setStatusLabel(OPENING);
+            setProgressValue(1 * 100 / 7);
             Image bitmap = Image.FromFile(openFileDialog1.FileName);
+            setProgressValue(3 * 100 / 7);
             putImage(bitmap);
+            setProgressValue(4 * 100 / 7);
             current = (Bitmap)bitmap;
+            setProgressValue(5 * 100 / 7);
             setName(openFileDialog1.FileName);
+            setProgressValue(6 * 100 / 7);
             setStatusLabel(OPENED);
+            setProgressValue(7 * 100 / 7);
         }
 
 
@@ -406,19 +424,41 @@ namespace iDrawer
         private void simpleSave(object oName) 
         {
             string name = (string)oName;
+            setProgressValue((1 * 100) / 6);
             setStatusLabel(SAVING);
+            setProgressValue((2 * 100) / 6);
             File.Delete(name);
-            current.Save(name, ImageFormat.Bmp);            
+            setProgressValue((3 * 100) / 6);
+            current.Save(name, ImageFormat.Bmp);
+            setProgressValue((5 * 100) / 6);
             setStatusLabel(SAVED);
+            setProgressValue((6 * 100) / 6);
             if (shouldCloseAfterSave)
             {
                 realClose("");
             }
         }
 
+        private void setProgressValue(int val)
+        {
+            if (this.InvokeRequired)
+            {
+                SetProgressCallback d = new SetProgressCallback(setProgressValue);
+                this.Invoke(d, new object[] { val });
+            }
+            else
+            {
+                operationProgress.Value = val;
+            }
+        }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            if (closingLocked)
+            {
+                e.Cancel = true;
+                return;
+            }
             if (toolStripStatusLabel1.Text.Equals(EDITED))
             {
                 DialogResult r = rEditedImageAsked();
@@ -433,5 +473,53 @@ namespace iDrawer
                 }
             }
         }
+
+        private void selectedColorPane_Click(object sender, EventArgs e)
+        {
+            colorChooser = selectedColorPane;
+        }
+
+        private void fillColorPane_Click(object sender, EventArgs e)
+        {
+            colorChooser = fillColorPane;
+        }
+
+        private void fillColorPane_BackColorChanged(object sender, EventArgs e)
+        {
+            currentFillBrush = new SolidBrush(fillColorPane.BackColor);
+        }
+
+        #region API for plugins
+        private bool closingLocked = false;
+        public void updateProgress(int newValue)
+        {
+            setProgressValue(newValue);
+        }
+        public Bitmap getCurrentBitmap()
+        {
+            return current;
+        }
+        public void updateDrawingBoard(Bitmap newBitmap)
+        {
+            panel2.BackgroundImage = newBitmap;
+            current = newBitmap;
+            panel2.Invalidate();
+            setStatusLabel(EDITED);
+        }
+        public void lockClosing()
+        {
+            closingLocked = true;
+            setOperationInProgress(true);
+        }
+        public void unlockClosing()
+        {
+            closingLocked = false;
+            setOperationInProgress(false);
+        }
+        public void setOperationInProgress(bool justStarted)
+        {
+            setStatusLabel(justStarted ? OP_IN_PROGRESS : EDITED);
+        }
+        #endregion
     }
 }

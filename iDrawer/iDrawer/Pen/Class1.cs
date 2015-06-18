@@ -18,20 +18,20 @@ namespace Pen
             return "Pen";
         }
 
-        public void draw(System.Drawing.Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        public void draw(System.Drawing.Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width, Brush fill)
         {
             g.DrawEllipse(p, x - width/2, y - width/2, width, width);
             g.FillEllipse(b, x - width/2, y - width/2, width, width);
         }
 
-        public void onDrawStarted(System.Drawing.Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        public void onDrawStarted(System.Drawing.Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width, Brush fill)
         {
-            draw(p, b, g, startX, startY, x, y, width);
+            draw(p, b, g, startX, startY, x, y, width, fill);
         }
 
-        public void onDrawFinished(System.Drawing.Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        public void onDrawFinished(System.Drawing.Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width, Brush fill)
         {
-            draw(p, b, g, startX, startY, x, y, width);
+            draw(p, b, g, startX, startY, x, y, width, fill);
         }
 
         public ToolStripItem getItem()

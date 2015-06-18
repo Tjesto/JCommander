@@ -19,26 +19,24 @@ namespace Geometrical
             return "Rectangle";
         }
 
-        public void draw(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        public void draw(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width, Brush fill)
         {
             //do nothing            
         }
 
-        public void onDrawStarted(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        public void onDrawStarted(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width, Brush fill)
         {
             firstX = startX;
             firstY = startY;
         }
 
-        public void onDrawFinished(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        public void onDrawFinished(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width, Brush fill)
         {
             int beginX = x < firstX ? x : firstX;
             int beginY = y < firstY ? y : firstY;
             int endX = x >= firstX ? x : firstX;
             int endY = y >= firstY ? y : firstY;
-            g.DrawRectangle(new Pen(b, width), beginX - width/2, beginY - width/2, endX - beginX, endY - beginY);
-            firstX = 0;
-            firstY = 0;
+            g.DrawRectangle(new Pen(b, width), beginX - width/2, beginY - width/2, endX - beginX, endY - beginY);            
         }
 
         public ToolStripItem getItem()
@@ -79,27 +77,25 @@ namespace Geometrical
             return "Filled Rectangle";
         }
 
-        public void draw(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        public void draw(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width, Brush fill)
         {
             //do nothing            
         }
 
-        public void onDrawStarted(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        public void onDrawStarted(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width, Brush fill)
         {
             firstX = startX;
             firstY = startY;
         }
 
-        public void onDrawFinished(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width)
+        public void onDrawFinished(Pen p, Brush b, Graphics g, int startX, int startY, int x, int y, int width, Brush fill)
         {
             int beginX = x < firstX ? x : firstX;
             int beginY = y < firstY ? y : firstY;
             int endX = x >= firstX ? x : firstX;
             int endY = y >= firstY ? y : firstY;
             g.DrawRectangle(new Pen(b, width), beginX - width/2, beginY - width/2, endX - beginX, endY - beginY);
-            g.FillRectangle(b, beginX - width / 2, beginY - width / 2, endX - beginX, endY - beginY);
-            firstX = 0;
-            firstY = 0;
+            g.FillRectangle(fill, beginX - width / 2, beginY - width / 2, endX - beginX, endY - beginY);            
         }
 
         public ToolStripItem getItem()
