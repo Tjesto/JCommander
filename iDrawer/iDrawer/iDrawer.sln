@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pen", "Pen\Pen.csproj", "{E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometrical", "Geometrical\Geometrical.csproj", "{2A144833-550B-492C-BACF-2F654AEF6C1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomizeBackground", "RandomizeBackground\RandomizeBackground.csproj", "{328AACC0-9677-4BB7-B403-0BE09B68E657}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorMask", "ColorMask\ColorMask.csproj", "{18933B53-F74B-4696-9AEE-EAD77C903C0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,14 @@ Global
 		{2A144833-550B-492C-BACF-2F654AEF6C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A144833-550B-492C-BACF-2F654AEF6C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A144833-550B-492C-BACF-2F654AEF6C1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{328AACC0-9677-4BB7-B403-0BE09B68E657}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{328AACC0-9677-4BB7-B403-0BE09B68E657}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{328AACC0-9677-4BB7-B403-0BE09B68E657}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{328AACC0-9677-4BB7-B403-0BE09B68E657}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18933B53-F74B-4696-9AEE-EAD77C903C0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18933B53-F74B-4696-9AEE-EAD77C903C0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18933B53-F74B-4696-9AEE-EAD77C903C0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18933B53-F74B-4696-9AEE-EAD77C903C0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

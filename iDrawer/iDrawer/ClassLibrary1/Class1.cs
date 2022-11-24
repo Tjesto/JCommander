@@ -142,6 +142,16 @@ namespace iDrawer.Plugins
         /// Set information about current application state. Use for indicating time-consuming operations
         /// </summary>
         /// <param name="justStarted">boolean value indicates if the operation started (true) or finished (false)</param>
-        void setOperationInProgress(bool justStarted);        
+        void setOperationInProgress(bool justStarted);
+        /// <summary>
+        /// Get color selected as main (or edge color)
+        /// </summary>
+        /// <returns>Main color</returns>
+        Color getPrimaryColor();
+        /// <summary>
+        /// Get color selected as fill color
+        /// </summary>
+        /// <returns>Fill color</returns>
+        Color getFillColor();
     }
 }

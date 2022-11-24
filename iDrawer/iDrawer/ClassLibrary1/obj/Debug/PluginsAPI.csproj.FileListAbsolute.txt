@@ -1,5 +1,4 @@
-O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\bin\Debug\ClassLibrary1.dll
-O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\bin\Debug\ClassLibrary1.pdb
-O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\obj\Debug\ClassLibrary1.dll
-O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\obj\Debug\ClassLibrary1.pdb
-O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\obj\Debug\PluginsAPI.csprojResolveAssemblyReference.cache
+O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\bin\Debug\iDrawerPluginsAPI.dll
+O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\bin\Debug\iDrawerPluginsAPI.pdb
+O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\obj\Debug\iDrawerPluginsAPI.dll
+O:\Projects\TPAL\iDrawer\iDrawer\ClassLibrary1\obj\Debug\iDrawerPluginsAPI.pdb

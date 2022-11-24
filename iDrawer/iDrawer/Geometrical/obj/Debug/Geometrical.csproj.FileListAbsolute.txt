@@ -1,7 +1,7 @@
 O:\Projects\TPAL\iDrawer\iDrawer\Geometrical\bin\Debug\Geometrical.dll
 O:\Projects\TPAL\iDrawer\iDrawer\Geometrical\bin\Debug\Geometrical.pdb
-O:\Projects\TPAL\iDrawer\iDrawer\Geometrical\bin\Debug\ClassLibrary1.dll
-O:\Projects\TPAL\iDrawer\iDrawer\Geometrical\bin\Debug\ClassLibrary1.pdb
 O:\Projects\TPAL\iDrawer\iDrawer\Geometrical\obj\Debug\Geometrical.csprojResolveAssemblyReference.cache
 O:\Projects\TPAL\iDrawer\iDrawer\Geometrical\obj\Debug\Geometrical.dll
 O:\Projects\TPAL\iDrawer\iDrawer\Geometrical\obj\Debug\Geometrical.pdb
+O:\Projects\TPAL\iDrawer\iDrawer\Geometrical\bin\Debug\iDrawerPluginsAPI.dll
+O:\Projects\TPAL\iDrawer\iDrawer\Geometrical\bin\Debug\iDrawerPluginsAPI.pdb

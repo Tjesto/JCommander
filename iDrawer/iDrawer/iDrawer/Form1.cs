@@ -42,6 +42,10 @@ namespace iDrawer
         private const string NEW_IMAGE = "New Image";
         private const string OP_IN_PROGRESS = "Operation in progress";
         private volatile bool shouldCloseAfterSave;
+        /*private volatile int lastInMemory = -1;
+        private volatile int currentInMemory = -1;
+        private volatile List<Bitmap> memory = new List<Bitmap>(20);*/
+        Memory memory = new Memory(20);
         #endregion
         public Form1()
         {
@@ -50,6 +54,7 @@ namespace iDrawer
             initializePlugins();
             current = new Bitmap(panel2.ClientSize.Width, panel2.ClientSize.Height);
             Graphics.FromImage(current).Clear(panel2.BackColor);
+            storeBitmap();
             colorChooser = selectedColorPane;
         }
 
@@ -99,6 +104,7 @@ namespace iDrawer
                         BasePlugin plugin = (BasePlugin)Activator.CreateInstance(t);
                         if (plugin != null)
                         {
+                            plugin.setDrawingWindow(this);
                             plugins.Add(plugin);
                             menu.Items.Add(plugin.createMenuItem());
                         }
@@ -203,6 +209,9 @@ namespace iDrawer
             currentTool.onDrawStarted(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text), currentFillBrush);
             currentTool.onDrawStarted(currentPen, currentBrush, Graphics.FromImage(current), x, y, e.X, e.Y, getSize(dotSizeBox.Text), currentFillBrush);
             setStatusLabel(EDITED);
+            memory.removeNext();
+            undoBut.Enabled = memory.isUndoEnabled();
+            redoBut.Enabled = memory.isRedoEnabled();
         }
 
         private void panel2_MouseUp(object sender, MouseEventArgs e)
@@ -210,6 +219,7 @@ namespace iDrawer
             isPainting = false;
             currentTool.onDrawFinished(currentPen, currentBrush, panel2.CreateGraphics(), x, y, e.X, e.Y, getSize(dotSizeBox.Text), currentFillBrush);
             currentTool.onDrawFinished(currentPen, currentBrush, Graphics.FromImage(current), x, y, e.X, e.Y, getSize(dotSizeBox.Text), currentFillBrush);
+            storeBitmap();
         }
 
         private void panel2_MouseMove(object sender, MouseEventArgs e)
@@ -297,6 +307,14 @@ namespace iDrawer
             }
         }
 
+        private void storeBitmap()
+        {
+            Bitmap b = (Bitmap) current.Clone();
+            memory.Add(b);
+            undoBut.Enabled = memory.isUndoEnabled();
+            redoBut.Enabled = memory.isRedoEnabled();
+        }
+
         private void setStatusLabel(string label)
         {
             if (this.InvokeRequired)
@@ -371,6 +389,7 @@ namespace iDrawer
             }
             panel2.BackColor = Color.White;
             Graphics.FromImage(current).Clear(Color.White);
+            storeBitmap();
             panel2.Invalidate();
             setName(NEW_IMAGE);
         }
@@ -503,6 +522,7 @@ namespace iDrawer
         {
             panel2.BackgroundImage = newBitmap;
             current = newBitmap;
+            storeBitmap();
             panel2.Invalidate();
             setStatusLabel(EDITED);
         }
@@ -520,6 +540,29 @@ namespace iDrawer
         {
             setStatusLabel(justStarted ? OP_IN_PROGRESS : EDITED);
         }
+        public Color getPrimaryColor()
+        {
+            return selectedColorPane.BackColor;
+        }
+        public Color getFillColor()
+        {
+            return fillColorPane.BackColor;
+        }
         #endregion
+
+        private void undoBut_Click(object sender, EventArgs e)
+        {
+            undoBut.Enabled = memory.checkUndoEnabled();            
+            current = memory.Undo();
+            redoBut.Enabled = memory.isRedoEnabled();
+            panel2.Invalidate();
+        }
+
+        private void redoBut_Click(object sender, EventArgs e)
+        {                        
+            current = memory.Redo();
+            redoBut.Enabled = memory.checkRedoEnabled();
+            panel2.Invalidate();            
+        }
     }
 }

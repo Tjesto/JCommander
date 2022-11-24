@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.statusbar = new System.Windows.Forms.StatusStrip();
             this.operationProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -58,6 +59,9 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.redoBut = new System.Windows.Forms.ToolStripButton();
+            this.undoBut = new System.Windows.Forms.ToolStripButton();
             this.statusbar.SuspendLayout();
             this.menu.SuspendLayout();
             this.toolbar.SuspendLayout();
@@ -144,7 +148,10 @@
             // 
             this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dotSizeBox,
-            this.toolStripLabel1});
+            this.undoBut,
+            this.redoBut,
+            this.toolStripLabel1,
+            this.toolStripSeparator1});
             this.toolbar.Location = new System.Drawing.Point(0, 24);
             this.toolbar.Name = "toolbar";
             this.toolbar.Size = new System.Drawing.Size(917, 25);
@@ -362,6 +369,33 @@
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // redoBut
+            // 
+            this.redoBut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.redoBut.Enabled = false;
+            this.redoBut.Image = ((System.Drawing.Image)(resources.GetObject("redoBut.Image")));
+            this.redoBut.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.redoBut.Name = "redoBut";
+            this.redoBut.Size = new System.Drawing.Size(23, 22);
+            this.redoBut.Text = "Redo";
+            this.redoBut.Click += new System.EventHandler(this.redoBut_Click);
+            // 
+            // undoBut
+            // 
+            this.undoBut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.undoBut.Enabled = false;
+            this.undoBut.Image = ((System.Drawing.Image)(resources.GetObject("undoBut.Image")));
+            this.undoBut.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.undoBut.Name = "undoBut";
+            this.undoBut.Size = new System.Drawing.Size(23, 22);
+            this.undoBut.Text = "Undo";
+            this.undoBut.Click += new System.EventHandler(this.undoBut_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -421,6 +455,9 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Panel fillColorPane;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ToolStripButton undoBut;
+        private System.Windows.Forms.ToolStripButton redoBut;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 
